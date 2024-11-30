@@ -1,0 +1,1422 @@
+openapi: 3.1.0
+info:
+  title: Tenant Management System API
+  description: This API is designed for the tenant-management service to add new tenants.
+  version: "1.0"
+servers:
+- url: http://172.232.110.134:8081/api/v1
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+- bearerAuth: []
+paths:
+  /tenants:
+    post:
+      summary: add a new tenant
+      tags:
+      - Tenant Management System API
+      description: "This API is designed for the tenant-management service to add new tenants. When we add a new tenant with that name, a new schema will be generated."
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: Content-Type
+        in: header
+        description: The type of content being sent.
+        required: true
+        schema:
+          type: string
+          examples:
+          - application/json
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+          examples:
+          - Bearer <token>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  examples:
+                  - swaraj
+                isActive:
+                  type: boolean
+                  examples:
+                  - true
+                createdBy:
+                  type: number
+                  examples:
+                  - 1001
+                updatedBy:
+                  type: string
+                  examples:
+                  - "1001"
+      responses:
+        "201":
+          description: Tenant created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - SUCCESS
+                  code:
+                    type: integer
+                    examples:
+                    - 201
+                  message:
+                    type: string
+                    examples:
+                    - Tenant created successfully with schema and changelog applied
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          examples:
+                          - swaraj
+                        tenantUUID:
+                          type: string
+                          examples:
+                          - 4b7eb963-c401-4027-a26c-e76ec769116a
+                        createdAt:
+                          type: string
+                          format: date-time
+                          examples:
+                          - 2024-11-07T06:46:09Z
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          examples:
+                          - "null"
+                        isActive:
+                          type: boolean
+                          examples:
+                          - true
+                        createdBy:
+                          type: integer
+                          examples:
+                          - 1001
+                        updatedBy:
+                          type: integer
+                          examples:
+                          - 1001
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - FAILED
+                    - ERROR
+                  code:
+                    type: string
+                    examples:
+                    - 400
+                  message:
+                    type: string
+                    examples:
+                    - "Validation failed: isActive status is required"
+                  data:
+                    type: string
+                    examples:
+                    - null
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: string
+                    examples:
+                    - 401
+                  message:
+                    type: string
+                    examples:
+                    - Unauthorized - Token is invalid
+                  data:
+                    type: string
+                    examples:
+                    - null
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - FAILED
+                  code:
+                    type: string
+                    examples:
+                    - 409
+                  message:
+                    type: string
+                    examples:
+                    - Tenant with this name already exists
+                  data:
+                    type: string
+                    examples:
+                    - null
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: string
+                    examples:
+                    - 500
+                  message:
+                    type: string
+                    examples:
+                    - 400 BAD_REQUEST "Failed to read HTTP message"
+                  data:
+                    type: string
+                    examples:
+                    - null
+    get:
+      summary: fetch all tenants
+      tags:
+      - Tenant Management System API
+      description: This API retrieves all tenants
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: Authorization
+        in: header
+        description: Bearer token for authorization
+        required: true
+        schema:
+          type: string
+          examples:
+          - Bearer <token>
+      responses:
+        "200":
+          description: Success Responses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - SUCCESS
+                  code:
+                    type: string
+                    examples:
+                    - 200
+                  message:
+                    type: string
+                    examples:
+                    - Active tenants retrieved successfully
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          examples:
+                          - banglore
+                        tenantUUID:
+                          type: string
+                          examples:
+                          - a91a1591-fe41-4a10-bed1-1f47e22b30d2
+                        createdAt:
+                          type: string
+                          format: date-time
+                          examples:
+                          - 2024-11-07T06:46:09Z
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          examples:
+                          - null
+                        isActive:
+                          type: boolean
+                          examples:
+                          - true
+                        createdBy:
+                          type: integer
+                          examples:
+                          - 1001
+                        updatedBy:
+                          type: integer
+                          examples:
+                          - 1001
+        "400":
+          description: Bad Request - Missing Authorization header
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: string
+                    examples:
+                    - 400
+                  message:
+                    type: string
+                    examples:
+                    - Missing Authorization header
+                  data:
+                    type: string
+                    examples:
+                    - null
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: string
+                    examples:
+                    - 401
+                  message:
+                    type: string
+                    examples:
+                    - Unauthorized - Token is invalid
+                  data:
+                    type: string
+                    examples:
+                    - null
+  /tenants/active:
+    get:
+      summary: Fetch all active tenants
+      tags:
+      - Tenant Management System API
+      description: This API is designed for the tenant-management service to retrieves all active tenants.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+          examples:
+          - Bearer <token>
+      responses:
+        "200":
+          description: Active tenants retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - SUCCESS
+                  code:
+                    type: string
+                    examples:
+                    - 200
+                  message:
+                    type: string
+                    examples:
+                    - Active tenants retrieved successfully
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          examples:
+                          - banglore
+                        tenantUUID:
+                          type: string
+                          examples:
+                          - a91a1591-fe41-4a10-bed1-1f47e22b30d2
+                        createdAt:
+                          type: string
+                          format: date-time
+                          examples:
+                          - 2024-11-07T06:46:09Z
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          examples:
+                          - null
+                        isActive:
+                          type: boolean
+                          examples:
+                          - true
+                        createdBy:
+                          type: integer
+                          examples:
+                          - 1001
+                        updatedBy:
+                          type: integer
+                          examples:
+                          - 1001
+        "400":
+          description: Bad Request - Missing Authorization header
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: string
+                    examples:
+                    - 400
+                  message:
+                    type: string
+                    examples:
+                    - Missing Authorization header
+                  data:
+                    type: string
+                    examples:
+                    - null
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: string
+                    examples:
+                    - 401
+                  message:
+                    type: string
+                    examples:
+                    - Unauthorized - Token is invalid
+                  data:
+                    type: string
+                    examples:
+                    - null
+  /tenants/{tenantId}:
+    put:
+      summary: Fetch all active tenants
+      tags:
+      - Tenant Management System API
+      description: This API is designed for the tenant-management service to update active tenant by using  “TenantId”.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: tenantId
+        in: path
+        required: true
+        schema:
+          type: string
+          examples:
+          - f71f2326-1a31-4e12-a788-5d0439f6508d
+      - name: Authorization
+        in: header
+        description: Bearer token for authorization
+        required: true
+        schema:
+          type: string
+          examples:
+          - Bearer <token>
+      requestBody:
+        description: Tenant details to update
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  examples:
+                  - pankaj
+                isActive:
+                  type: boolean
+                  examples:
+                  - false
+                createdBy:
+                  type: integer
+                  examples:
+                  - 1001
+                updatedBy:
+                  type: integer
+                  examples:
+                  - 1001
+      responses:
+        "200":
+          description: Tenant updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - SUCCESS
+                  code:
+                    type: integer
+                    examples:
+                    - 200
+                  message:
+                    type: string
+                    examples:
+                    - Tenant updated successfully
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          examples:
+                          - swaraj
+                        tenantUUID:
+                          type: string
+                          examples:
+                          - f71f2326-1a31-4e12-a788-5d0439f6508d
+                        createdAt:
+                          type: string
+                          format: date-time
+                          examples:
+                          - 2024-11-08T06:27:07Z
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          examples:
+                          - 2024-11-11T12:54:49Z
+                        isActive:
+                          type: boolean
+                          examples:
+                          - true
+                        createdBy:
+                          type: integer
+                          examples:
+                          - 1001
+                        updatedBy:
+                          type: integer
+                          examples:
+                          - 1001
+        "400":
+          description: Bad Request - Missing Authorization header
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: string
+                    examples:
+                    - 400
+                  message:
+                    type: string
+                    examples:
+                    - Missing Authorization header
+                  data:
+                    type: string
+                    examples:
+                    - null
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: string
+                    examples:
+                    - 401
+                  message:
+                    type: string
+                    examples:
+                    - Unauthorized - Token is invalid
+                  data:
+                    type: string
+                    examples:
+                    - null
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: string
+                    examples:
+                    - 500
+                  message:
+                    type: string
+                    examples:
+                    - 400 BAD_REQUEST \"Failed to read HTTP message\"
+                  data:
+                    type: string
+                    examples:
+                    - null
+    get:
+      summary: fetch active tenant by “TenantId”
+      tags:
+      - Tenant Management System API
+      description: This API is designed for the tenant-management service to fetch active tenant by using  “TenantId”.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: tenantId
+        in: path
+        required: true
+        schema:
+          type: string
+          examples:
+          - f71f2326-1a31-4e12-a788-5d0439f6508d
+      - name: Authorization
+        in: header
+        description: Bearer token for authorization
+        required: true
+        schema:
+          type: string
+          examples:
+          - Bearer <token>
+      responses:
+        "200":
+          description: Tenant Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - SUCCESS
+                  code:
+                    type: string
+                    examples:
+                    - 200
+                  message:
+                    type: string
+                    examples:
+                    - Tenant found successfully
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          examples:
+                          - hyderabad
+                        tenantUUID:
+                          type: string
+                          examples:
+                          - fb642555-f7c5-4d9f-98be-72984293a38c
+                        createdAt:
+                          type: string
+                          format: date-time
+                          examples:
+                          - 2024-11-07T06:39:38Z
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          examples:
+                          - 2024-11-07T07:52:32Z
+                        isActive:
+                          type: boolean
+                          examples:
+                          - true
+                        createdBy:
+                          type: integer
+                          examples:
+                          - 1001
+                        updatedBy:
+                          type: integer
+                          examples:
+                          - null
+        "400":
+          description: Bad Request - Missing Authorization header
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: string
+                    examples:
+                    - 400
+                  message:
+                    type: string
+                    examples:
+                    - Missing Authorization header
+                  data:
+                    type: string
+                    examples:
+                    - null
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: string
+                    examples:
+                    - 401
+                  message:
+                    type: string
+                    examples:
+                    - Unauthorized - Token is invalid
+                  data:
+                    type: string
+                    examples:
+                    - null
+        "404":
+          description: Tenant Not Exist with ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - FAILED
+                  code:
+                    type: string
+                    examples:
+                    - 404
+                  message:
+                    type: string
+                    examples:
+                    - No tenant was found for the given tenant ID
+                  data:
+                    type: string
+                    examples:
+                    - null
+  /tenants/by-location:
+    get:
+      summary: Fetch active tenant by location
+      tags:
+      - Tenant Management System API
+      description: This API is designed to fetch an active tenant based on the latitude and longitude coordinates.
+      operationId: fetchTenantByLocation
+      parameters:
+      - name: latitude
+        in: query
+        description: Latitude of the location
+        required: true
+        schema:
+          type: number
+          format: float
+          examples:
+          - - "17.36968790402445"
+      - name: longitude
+        in: query
+        description: Longitude of the location
+        required: true
+        schema:
+          type: number
+          format: float
+          examples:
+          - - "78.28058281986385"
+      - name: Authorization
+        in: header
+        description: Bearer token for authorization
+        required: true
+        schema:
+          type: string
+          examples:
+          - Bearer <token>
+      responses:
+        "200":
+          description: Tenant found successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - SUCCESS
+                  code:
+                    type: integer
+                    examples:
+                    - 200
+                  message:
+                    type: string
+                    examples:
+                    - Tenant found successfully
+                  data:
+                    type: string
+                    examples:
+                    - fb642555-f7c5-4d9f-98be-72984293a38c
+        "400":
+          description: Missing Authorization header
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: integer
+                    examples:
+                    - 400
+                  message:
+                    type: string
+                    examples:
+                    - Missing Authorization header
+                  data:
+                    type: object
+                    examples:
+                    - null
+        "401":
+          description: Unauthorized - Token is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: integer
+                    examples:
+                    - 401
+                  message:
+                    type: string
+                    examples:
+                    - Unauthorized - Token is invalid
+                  data:
+                    type: object
+                    examples:
+                    - null
+        "404":
+          description: No active tenant exists for the specified location
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - FAILED
+                  code:
+                    type: integer
+                    examples:
+                    - 404
+                  message:
+                    type: string
+                    examples:
+                    - No active tenant exists for the specified location
+                  data:
+                    type: object
+                    examples:
+                    - null
+  /tenants/geofences/{id}:
+    get:
+      summary: fetch active tenantgeofence by using “tenant-id”.
+      tags:
+      - Tenant Management System API
+      description: This API is designed for the tenant-management service to fetch active tenantgeofence by using “tenant-id”.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          examples:
+          - f71f2326-1a31-4e12-a788-5d0439f6508d
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+          examples:
+          - Bearer <token>
+      responses:
+        "200":
+          description: Tenant Geofence found successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - SUCCESS
+                  code:
+                    type: integer
+                    examples:
+                    - 200
+                  message:
+                    type: string
+                    examples:
+                    - Tenant Geofence found successfully
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          examples:
+                          - hyderabad
+                        uuid:
+                          type: string
+                          examples:
+                          - fb642555-f7c5-4d9f-98be-72984293a38c
+                        boundary:
+                          type: string
+                          examples:
+                          - "POLYGON ((78.34991 17.39622, 78.35128 17.39262, 78.35197 17.38869, 78.35171 17.38688, 78.35102 17.38573, 78.35094 17.3845, 78.35111 17.38409, 78.35008 17.38139, 78.34939 17.37754, 78.34888 17.37574, 78.34879 17.37377, 78.34991 17.37066, 78.35068 17.36854, 78.3524 17.36387, 78.35395 17.36133, 78.35824 17.35297, 78.36214 17.33733, 78.36703 17.32758, 78.37149 17.32065, 78.37908 17.30177, 78.38269 17.28014, 78.37883 17.26857, 78.37523 17.25947, 78.38201 17.23578, 78.38256 17.21656, 78.3897 17.20553, 78.42294 17.20275, 78.45125 17.20324, 78.47498 17.20299, 78.4952 17.20481, 78.52824 17.21219, 78.5511 17.21853, 78.58642 17.23659, 78.6131 17.25164, 78.63839 17.272, 78.65041 17.2835, 78.65792 17.31807, 78.65835 17.33738, 78.68021 17.36628, 78.68494 17.39345, 78.68096 17.41205, 78.67647 17.429, 78.6678 17.44729, 78.66967 17.47419, 78.66156 17.49355, 78.64977 17.51171, 78.63573 17.5325, 78.62771 17.55603, 78.62379 17.5641, 78.6016 17.57759, 78.5744 17.57956, 78.53097 17.59119, 78.49269 17.5988, 78.44479 17.60788, 78.40128 17.59798, 78.38772 17.57646, 78.34521 17.56149, 78.31264 17.55842, 78.2747 17.55662, 78.21102 17.54836, 78.20793 17.53134, 78.22517 17.51176, 78.23836 17.48941, 78.24411 17.46759, 78.24866 17.44158, 78.25599 17.41864, 78.28465 17.408, 78.30744 17.39961, 78.33761 17.39073, 78.34469 17.39355, 78.34761 17.39511, 78.34991 17.39622))"
+                        isActive:
+                          type: boolean
+                          examples:
+                          - true
+        "400":
+          description: Missing Authorization header
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: integer
+                    examples:
+                    - "400"
+                  message:
+                    type: string
+                    examples:
+                    - Missing Authorization header
+                  data:
+                    type: object
+                    examples:
+                    - null
+        "404":
+          description: No Tenant Geofence was found for the given tenant ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - FAILED
+                  code:
+                    type: integer
+                    examples:
+                    - 404
+                  message:
+                    type: string
+                    examples:
+                    - No Tenant Geofence was found for the given tenant ID
+                  data:
+                    type: object
+                    examples:
+                    - null
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: integer
+                    examples:
+                    - "500"
+                  message:
+                    type: string
+                    examples:
+                    - 404 NOT_FOUND
+                  data:
+                    type: object
+                    examples:
+                    - null
+  /tenant-geofences/active:
+    get:
+      summary: fetch all active tenantgeofence.
+      tags:
+      - Tenant Management System API
+      description: This API is designed for the tenant-management service to fetch all active tenantgeofences.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+          examples:
+          - Bearer <token>
+      - name: Content-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          examples:
+          - application/json
+      responses:
+        "200":
+          description: All  Active Tenant Geofences retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - SUCCESS
+                  code:
+                    type: integer
+                    examples:
+                    - 200
+                  message:
+                    type: string
+                    examples:
+                    - All  Active Tenant Geofences retrieved successfully
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          examples:
+                          - hyderabad
+                        uuid:
+                          type: string
+                          examples:
+                          - fb642555-f7c5-4d9f-98be-72984293a38c
+                        boundary:
+                          type: string
+                          examples:
+                          - "POLYGON ((78.34991 17.39622, 78.35128 17.39262, 78.35197 17.38869, 78.35171 17.38688, 78.35102 17.38573, 78.35094 17.3845, 78.35111 17.38409, 78.35008 17.38139, 78.34939 17.37754, 78.34888 17.37574, 78.34879 17.37377, 78.34991 17.37066, 78.35068 17.36854, 78.3524 17.36387, 78.35395 17.36133, 78.35824 17.35297, 78.36214 17.33733, 78.36703 17.32758, 78.37149 17.32065, 78.37908 17.30177, 78.38269 17.28014, 78.37883 17.26857, 78.37523 17.25947, 78.38201 17.23578, 78.38256 17.21656, 78.3897 17.20553, 78.42294 17.20275, 78.45125 17.20324, 78.47498 17.20299, 78.4952 17.20481, 78.52824 17.21219, 78.5511 17.21853, 78.58642 17.23659, 78.6131 17.25164, 78.63839 17.272, 78.65041 17.2835, 78.65792 17.31807, 78.65835 17.33738, 78.68021 17.36628, 78.68494 17.39345, 78.68096 17.41205, 78.67647 17.429, 78.6678 17.44729, 78.66967 17.47419, 78.66156 17.49355, 78.64977 17.51171, 78.63573 17.5325, 78.62771 17.55603, 78.62379 17.5641, 78.6016 17.57759, 78.5744 17.57956, 78.53097 17.59119, 78.49269 17.5988, 78.44479 17.60788, 78.40128 17.59798, 78.38772 17.57646, 78.34521 17.56149, 78.31264 17.55842, 78.2747 17.55662, 78.21102 17.54836, 78.20793 17.53134, 78.22517 17.51176, 78.23836 17.48941, 78.24411 17.46759, 78.24866 17.44158, 78.25599 17.41864, 78.28465 17.408, 78.30744 17.39961, 78.33761 17.39073, 78.34469 17.39355, 78.34761 17.39511, 78.34991 17.39622))"
+                        isActive:
+                          type: boolean
+                          examples:
+                          - true
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: integer
+                    examples:
+                    - "400"
+                  message:
+                    type: string
+                    examples:
+                    - Missing Authorization header
+                  data:
+                    type: object
+                    examples:
+                    - null
+        "401":
+          description: Unauthorized - Token is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: integer
+                    examples:
+                    - "401"
+                  message:
+                    type: string
+                    examples:
+                    - Unauthorized - Token is invalid
+                  data:
+                    type: object
+                    examples:
+                    - null
+  /tenant-geofences:
+    get:
+      summary: fetch all  tenantgeofences.
+      tags:
+      - Tenant Management System API
+      description: This API is designed for the tenant-management service to fetch all  tenantgeofences.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+          examples:
+          - Bearer <token>
+      - name: Content-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          examples:
+          - application/json
+      responses:
+        "200":
+          description: All   Tenant Geofences retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - SUCCESS
+                  code:
+                    type: integer
+                    examples:
+                    - 200
+                  message:
+                    type: string
+                    examples:
+                    - All Active Active Tenant Geofences retrieved successfully
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          examples:
+                          - hyderabad
+                        uuid:
+                          type: string
+                          examples:
+                          - fb642555-f7c5-4d9f-98be-72984293a38c
+                        boundary:
+                          type: string
+                          examples:
+                          - "POLYGON ((78.34991 17.39622, 78.35128 17.39262, 78.35197 17.38869, 78.35171 17.38688, 78.35102 17.38573, 78.35094 17.3845, 78.35111 17.38409, 78.35008 17.38139, 78.34939 17.37754, 78.34888 17.37574, 78.34879 17.37377, 78.34991 17.37066, 78.35068 17.36854, 78.3524 17.36387, 78.35395 17.36133, 78.35824 17.35297, 78.36214 17.33733, 78.36703 17.32758, 78.37149 17.32065, 78.37908 17.30177, 78.38269 17.28014, 78.37883 17.26857, 78.37523 17.25947, 78.38201 17.23578, 78.38256 17.21656, 78.3897 17.20553, 78.42294 17.20275, 78.45125 17.20324, 78.47498 17.20299, 78.4952 17.20481, 78.52824 17.21219, 78.5511 17.21853, 78.58642 17.23659, 78.6131 17.25164, 78.63839 17.272, 78.65041 17.2835, 78.65792 17.31807, 78.65835 17.33738, 78.68021 17.36628, 78.68494 17.39345, 78.68096 17.41205, 78.67647 17.429, 78.6678 17.44729, 78.66967 17.47419, 78.66156 17.49355, 78.64977 17.51171, 78.63573 17.5325, 78.62771 17.55603, 78.62379 17.5641, 78.6016 17.57759, 78.5744 17.57956, 78.53097 17.59119, 78.49269 17.5988, 78.44479 17.60788, 78.40128 17.59798, 78.38772 17.57646, 78.34521 17.56149, 78.31264 17.55842, 78.2747 17.55662, 78.21102 17.54836, 78.20793 17.53134, 78.22517 17.51176, 78.23836 17.48941, 78.24411 17.46759, 78.24866 17.44158, 78.25599 17.41864, 78.28465 17.408, 78.30744 17.39961, 78.33761 17.39073, 78.34469 17.39355, 78.34761 17.39511, 78.34991 17.39622))"
+                        isActive:
+                          type: boolean
+                          examples:
+                          - true
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: integer
+                    examples:
+                    - "400"
+                  message:
+                    type: string
+                    examples:
+                    - Missing Authorization header
+                  data:
+                    type: object
+                    examples:
+                    - null
+        "401":
+          description: Unauthorized - Token is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: integer
+                    examples:
+                    - "401"
+                  message:
+                    type: string
+                    examples:
+                    - Unauthorized - Token is invalid
+                  data:
+                    type: object
+                    examples:
+                    - null
+  /tenant-geofences/{name}:
+    get:
+      summary: fetch all  tenantgeofences.
+      tags:
+      - Tenant Management System API
+      description: This API is designed for the tenant-management service to fetch all  tenantgeofences.
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          examples:
+          - hyderabad
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+          examples:
+          - Bearer <token>
+      - name: Content-Type
+        in: header
+        required: true
+        schema:
+          type: string
+          examples:
+          - application/json
+      responses:
+        "200":
+          description: Tenant Geofence retrieved successfully by name
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - SUCCESS
+                  code:
+                    type: integer
+                    examples:
+                    - 200
+                  message:
+                    type: string
+                    examples:
+                    - Tenant Geofence retrieved successfully by name
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          examples:
+                          - hyderabad
+                        uuid:
+                          type: string
+                          examples:
+                          - fb642555-f7c5-4d9f-98be-72984293a38c
+                        boundary:
+                          type: string
+                          examples:
+                          - "POLYGON ((78.34991 17.39622, 78.35128 17.39262, 78.35197 17.38869, 78.35171 17.38688, 78.35102 17.38573, 78.35094 17.3845, 78.35111 17.38409, 78.35008 17.38139, 78.34939 17.37754, 78.34888 17.37574, 78.34879 17.37377, 78.34991 17.37066, 78.35068 17.36854, 78.3524 17.36387, 78.35395 17.36133, 78.35824 17.35297, 78.36214 17.33733, 78.36703 17.32758, 78.37149 17.32065, 78.37908 17.30177, 78.38269 17.28014, 78.37883 17.26857, 78.37523 17.25947, 78.38201 17.23578, 78.38256 17.21656, 78.3897 17.20553, 78.42294 17.20275, 78.45125 17.20324, 78.47498 17.20299, 78.4952 17.20481, 78.52824 17.21219, 78.5511 17.21853, 78.58642 17.23659, 78.6131 17.25164, 78.63839 17.272, 78.65041 17.2835, 78.65792 17.31807, 78.65835 17.33738, 78.68021 17.36628, 78.68494 17.39345, 78.68096 17.41205, 78.67647 17.429, 78.6678 17.44729, 78.66967 17.47419, 78.66156 17.49355, 78.64977 17.51171, 78.63573 17.5325, 78.62771 17.55603, 78.62379 17.5641, 78.6016 17.57759, 78.5744 17.57956, 78.53097 17.59119, 78.49269 17.5988, 78.44479 17.60788, 78.40128 17.59798, 78.38772 17.57646, 78.34521 17.56149, 78.31264 17.55842, 78.2747 17.55662, 78.21102 17.54836, 78.20793 17.53134, 78.22517 17.51176, 78.23836 17.48941, 78.24411 17.46759, 78.24866 17.44158, 78.25599 17.41864, 78.28465 17.408, 78.30744 17.39961, 78.33761 17.39073, 78.34469 17.39355, 78.34761 17.39511, 78.34991 17.39622))"
+                        isActive:
+                          type: boolean
+                          examples:
+                          - true
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: integer
+                    examples:
+                    - "400"
+                  message:
+                    type: string
+                    examples:
+                    - Missing Authorization header
+                  data:
+                    type: object
+                    examples:
+                    - null
+        "401":
+          description: Unauthorized - Token is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - ERROR
+                  code:
+                    type: integer
+                    examples:
+                    - "401"
+                  message:
+                    type: string
+                    examples:
+                    - Unauthorized - Token is invalid
+                  data:
+                    type: object
+                    examples:
+                    - null
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: ""
+                    examples:
+                    - FAILED
+                  code:
+                    type: string
+                    examples:
+                    - "404"
+                  message:
+                    type: string
+                    examples:
+                    - No Tenant was found for the given tenant name
+                  data:
+                    type: object
+                    examples:
+                    - null
+  /tenants/applychanges:
+    post:
+      summary: applyChangesToTenant
+      tags:
+      - Tenant Management System API
+      description: This API is designed for the tenant-management service to to applychangestotenant
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+          examples:
+          - Bearer <token>
+      responses:
+        "201":
+          description: Apply Changes To Tenant successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    examples:
+                    - SUCCESS
+                  code:
+                    type: integer
+                    examples:
+                    - - "201"
+                  message:
+                    type: string
+                    examples:
+                    - - Apply Changes To Tenant successfully with schema and changelog applied
+                  data:
+                    type: "null"
